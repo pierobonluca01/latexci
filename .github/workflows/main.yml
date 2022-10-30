@@ -12,8 +12,3 @@ jobs:
           root_file: main.tex
           work_in_root_file_dir: true
           latexmk_use_lualatex: true
-      - name: Upload PDF file
-        uses: actions/upload-artifact@v3
-        with:
-          name: PDF
-          path: main.pdf
