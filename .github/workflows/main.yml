@@ -14,4 +14,4 @@ jobs:
           latexmk_use_lualatex: true
       - uses: actions/upload-artifact@v3
         with:
-          path: main.pdf
+          path: /out/main.pdf
