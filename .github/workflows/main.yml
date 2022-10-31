@@ -10,9 +10,7 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           work_in_root_file_dir: true
-          root_file: |
-            "*/main.tex"
-            "main.tex"
+          root_file: "*/main.tex"
           glob_root_file: true
           latexmk_use_lualatex: true
       - uses: actions/upload-artifact@v3
