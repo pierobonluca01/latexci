@@ -26,6 +26,7 @@ jobs:
   build_ghpages:
     runs-on: ubuntu-latest
     name: Directory Listings Index
+    needs: build_doc
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -34,6 +35,9 @@ jobs:
         uses: jayanta525/github-pages-directory-listing@v2.0.0
         with:
           FOLDER: documentazione
+      - uses: actions/upload-artifact@v3
+        with:
+          name: documentazione
 
       - name: Deploy to Pages
         uses: JamesIves/github-pages-deploy-action@4.1.3
