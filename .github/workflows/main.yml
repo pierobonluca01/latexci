@@ -27,6 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Directory Listings Index
     needs: build_doc
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2.5.0
@@ -52,5 +55,6 @@ jobs:
           FOLDER: ./documentazione
      
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
