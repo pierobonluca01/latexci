@@ -33,8 +33,6 @@ jobs:
 
       - name: Generate Directory Listings
         uses: jayanta525/github-pages-directory-listing@v2.0.0
-        with:
-          FOLDER: documentazione
 
       - name: Deploy to Pages
         uses: JamesIves/github-pages-deploy-action@4.1.3
