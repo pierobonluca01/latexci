@@ -1,13 +1,13 @@
 on: [push, pull_request]
 
 jobs:
-  build_documenti:
+  build_doc:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v3
       
-      - name: Builda
+      - name: Build LaTeX files
         run: |
           docker run -i --rm -v "$(pwd)/:/work" -w /work ghcr.io/xu-cheng/texlive-full bash -c '
             shopt -s globstar
@@ -16,8 +16,37 @@ jobs:
               cd "$(dirname $d_path)"
               latexmk -lualatex $(basename $d_path)
             ) done'
-
-      - name: Upload PDF file
+            
+      - name: Upload PDF files
         uses: actions/upload-artifact@v3
         with:
+          name: documentazione
           path: "**/*.pdf"
+  
+  build_ghpages:
+    runs-on: ubuntu-latest
+    name: Directory Listings Index
+    needs: build_doc
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.5.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name: documentazione
+          path: ./documentazione
+          
+      - name: Generate Directory Listings
+        uses: jayanta525/github-pages-directory-listing@v2.0.0
+        with:
+          FOLDER: ./documentazione
+
+      - name: Deploy to Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: ./documentazione
