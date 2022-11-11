@@ -23,38 +23,50 @@ jobs:
           name: documentazione
           path: "**/*.pdf"
   
-  build_ghpages:
+  build_website:
     runs-on: ubuntu-latest
     name: Directory Listings Index
     needs: build_doc
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2.5.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Download a Build Artifact
+      - name: Download Artifact DOCUMENTAZIONE
         uses: actions/download-artifact@v3.0.1
         with:
           name: documentazione
           path: ./documentazione
           
-      - name: Generate Directory Listings
+      - name: Generate Directory Listings Page
         uses: jayanta525/github-pages-directory-listing@v2.0.0
         with:
           FOLDER: ./documentazione
-
-      - name: Deploy to Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.3
+          
+      - name: Upload Directory Listings Page Artifact
+        uses: actions/upload-artifact@v3
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: ./documentazione
-     
+          name: documentazione_page
+  
+  build_ghpages:
+    runs-on: ubuntu-latest
+    name: Build GitHub Pages
+    needs: [build_doc, build_website]
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: documentazione_page
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+      
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
