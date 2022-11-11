@@ -16,7 +16,7 @@ jobs:
               cd "$(dirname $d_path)"
               latexmk -lualatex $(basename $d_path)
             ) done'
-
+            
       - name: Upload PDF files
         uses: actions/upload-artifact@v3
         with:
