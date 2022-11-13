@@ -65,6 +65,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: documentazione_page
+          path: ./page
       
       - name: Setup Pages
         uses: actions/configure-pages@v2
@@ -72,7 +73,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: "**/*.pdf"
+          path: ./page
       
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
