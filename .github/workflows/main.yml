@@ -40,10 +40,14 @@ jobs:
           name: documentazione
           path: ./artifact
           
-      - name: Generate Directory Listings Page
-        uses: jayanta525/github-pages-directory-listing@v2.0.0
-        with:
-          FOLDER: ./artifact
+#      - name: Generate Directory Listings Page
+#       uses: jayanta525/github-pages-directory-listing@v2.0.0
+#        with:
+#          FOLDER: ./artifact
+      - name: GitHub Pages Deploy
+        uses: maxheld83/ghpages@v0.2.1
+        env:
+          BUILD_DIR: ./artifact
           
       - name: Generate artifact containing Directory Listings Page
         uses: actions/upload-artifact@v3
