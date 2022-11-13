@@ -42,7 +42,7 @@ jobs:
       - name: Generate Directory Listings Page
         uses: jayanta525/github-pages-directory-listing@v2.0.0
         with:
-          FOLDER: ~/artifact
+          FOLDER: artifact
           
       - name: Upload Directory Listings Page Artifact
         uses: actions/upload-artifact@v3
