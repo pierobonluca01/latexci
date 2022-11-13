@@ -1,8 +1,9 @@
 on: [push, pull_request]
 
 jobs:
-  build_doc:
+  build_docs:
     runs-on: ubuntu-latest
+    name: Build Documents
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v3
@@ -17,7 +18,7 @@ jobs:
               latexmk -lualatex $(basename $d_path)
             ) done'
             
-      - name: Upload PDF files
+      - name: Generate artifact containing PDF files
         uses: actions/upload-artifact@v3
         with:
           name: documentazione
@@ -25,28 +26,55 @@ jobs:
   
   build_ghpages:
     runs-on: ubuntu-latest
-    name: Directory Listings Index
-    needs: build_doc
+    name: Build GitHub Pages
+    needs: build_docs
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2.5.0
+      - name: Set up Git repository
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Download a Build Artifact
+      - name: Download artifact
         uses: actions/download-artifact@v3.0.1
         with:
           name: documentazione
-          path: ./documentazione
+          path: ./artifact
           
-      - name: Generate Directory Listings
+      - name: Generate Directory Listings Page
         uses: jayanta525/github-pages-directory-listing@v2.0.0
         with:
-          FOLDER: ./documentazione
-
-      - name: Deploy to Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.3
+          FOLDER: ./artifact
+          
+      - name: Generate artifact containing Directory Listings Page
+        uses: actions/upload-artifact@v3
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: ./documentazione
+          name: documentazione_page
+          path: ./artifact
+  
+  deploy_ghpages:
+    runs-on: ubuntu-latest
+    name: Deploy GitHub Pages
+    needs: [build_docs, build_ghpages]
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: documentazione_page
+          path: ./page
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./page
+      
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
