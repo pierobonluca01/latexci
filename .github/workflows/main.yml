@@ -37,12 +37,9 @@ jobs:
         uses: actions/download-artifact@v3.0.1
         with:
           name: documentazione
-          path: ./documentazione
           
       - name: Generate Directory Listings Page
         uses: jayanta525/github-pages-directory-listing@v2.0.0
-        with:
-          FOLDER: ./documentazione
           
       - name: Upload Directory Listings Page Artifact
         uses: actions/upload-artifact@v3
@@ -56,6 +53,9 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v3
@@ -68,7 +68,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./
+          path: "**/*.pdf"
       
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
