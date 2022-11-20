@@ -1,80 +1,20 @@
-on: [push, pull_request]
+name: CI
+
+on: 
+  push:
+    branches:
+      - master
 
 jobs:
-  build_docs:
+  latex:
     runs-on: ubuntu-latest
-    name: Build Documents
     steps:
-      - name: Set up Git repository
-        uses: actions/checkout@v3
-      
-      - name: Build LaTeX files
-        run: |
-          docker run -i --rm -v "$(pwd)/:/work" -w /work ghcr.io/xu-cheng/texlive-full bash -c '
-            shopt -s globstar
-            set -e
-            for d_path in ./**/d_*.tex; do (
-              cd "$(dirname $d_path)"
-              latexmk -lualatex $(basename $d_path)
-            ) done'
-            
-      - name: Generate artifact containing PDF files
-        uses: actions/upload-artifact@v3
-        with:
-          name: documentazione
-          path: "**/*.pdf"
-  
-  build_ghpages:
-    runs-on: ubuntu-latest
-    name: Build GitHub Pages
-    needs: build_docs
-    steps:
-      - name: Set up Git repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Download artifact
-        uses: actions/download-artifact@v3.0.1
-        with:
-          name: documentazione
-          path: ./artifact
-          
-      - name: Generate Directory Listings Page
-        uses: jayanta525/github-pages-directory-listing@v2.0.0
-        with:
-          FOLDER: ./artifact
-          
-      - name: Generate artifact containing Directory Listings Page
-        uses: actions/upload-artifact@v3
-        with:
-          name: documentazione_page
-          path: ./artifact
-  
-  deploy_ghpages:
-    runs-on: ubuntu-latest
-    name: Deploy GitHub Pages
-    needs: [build_docs, build_ghpages]
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    permissions:
-      pages: write
-      id-token: write
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: documentazione_page
-          path: ./page
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-      
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./page
-      
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+    - name: Set up Git repository
+      uses: actions/checkout@v4
+    - name: Compile and Deploy LaTeX to PDF
+      uses: ottojo/uberblatt-action@master
+    - name: GitHub Pages Deploy
+      uses: maxheld83/ghpages@v0.2.1
+      env:
+        BUILD_DIR: "build/"
+        GH_PAT: ${{ secrets.GH_PAT }}
