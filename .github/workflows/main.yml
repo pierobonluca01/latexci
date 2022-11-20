@@ -44,7 +44,7 @@ jobs:
         run: |
           git clone --depth=1 https://github.com/paperbenni/apindex.git
           cd apindex
-          sed '10 i \\thtml, body {font-family: "Times New Roman", serif; background-color: #0d1117;}' share/apindex/index.template.html
+          sed '10 i \\thtml, body {font-family: "Times New Roman", serif; background-color: rgb(31, 31, 31);}' share/apindex/index.template.html
           cmake . -DCMAKE_INSTALL_PREFIX=/usr
           sudo make install
           cd ..
