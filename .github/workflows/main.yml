@@ -45,7 +45,7 @@ jobs:
           git clone --depth=1 https://github.com/paperbenni/apindex.git
           cd apindex
           sed -i '4i \\t<title>Percorso attuale: #TITLE</title>' share/apindex/index.template.html
-          sed -i '5d; 11i \\thtml, body {font-family: "Times New Roman", serif; color: white; background-color: rgb(13, 17, 23);}\n\ta:link {color: white;}\n\ta:visited {color: white;}' share/apindex/index.template.html
+          sed -i '5d; 11i \\thtml, body {margin: 15px; padding: 10px; font-family: "Times New Roman", serif; color: white; background-color: rgb(13, 17, 23);}\n\ta:link {color: white;}\n\ta:visited {color: white;}' share/apindex/index.template.html
           sed -i '17i \\t<h1>Percorso attuale: #DIR</h1>' share/apindex/index.template.html
           sed -i '18d; 25i \\t<th align="left">Nome del file</th>' share/apindex/index.template.html
           sed -i '25d; 33d; 34d; 35d' share/apindex/index.template.html
