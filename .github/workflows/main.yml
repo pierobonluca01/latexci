@@ -46,7 +46,7 @@ jobs:
           cd apindex
           sed -i '4i \\t<title>Percorso attuale: #TITLE</title>' share/apindex/index.template.html
           sed -i '5d; 11i \\thtml, body {font-family: "Times New Roman", serif; color: white; background-color: rgb(13, 17, 23);}' share/apindex/index.template.html
-          sed -i '14d; 14i \\t<h1>Percorso attuale: #DIR</h1>' share/apindex/index.template.html
+          sed -i '15d; 14i \\t<h1>Percorso attuale: #DIR</h1>' share/apindex/index.template.html
           sed -i '22d; 21i \\t<th align="left">Nome del file</th>' share/apindex/index.template.html
           sed -i '29d; 30d; 31d' share/apindex/index.template.html
           cat share/apindex/index.template.html
