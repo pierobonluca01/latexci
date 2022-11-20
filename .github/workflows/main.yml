@@ -43,6 +43,7 @@ jobs:
       - name: Install apindex
         run: |
           curl https://raw.githubusercontent.com/paperbenni/apindex/master/install.sh
+          ls .
           sed '7 i background-color: #0d1117\n' /usr/share/apindex/index.template.html
         
       - name: Generate static page
