@@ -39,12 +39,13 @@ jobs:
         with:
           name: documentazione
           path: ./artifact
-          
-      - name: Generate Directory Listings Page
-        uses: jayanta525/github-pages-directory-listing@v2.0.0
-        with:
-          FOLDER: ./artifact
-          
+
+      - name: Install apindex
+        run: curl https://raw.githubusercontent.com/paperbenni/apindex/master/install.sh | bash
+        
+      - name: Generate static page
+        run: apindex ./artifact
+        
       - name: Generate artifact containing Directory Listings Page
         uses: actions/upload-artifact@v3
         with:
