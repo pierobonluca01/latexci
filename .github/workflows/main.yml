@@ -42,6 +42,7 @@ jobs:
 
       - name: Install apindex
         run: |
+          cd
           cd .cache
           git clone --depth=1 https://github.com/paperbenni/apindex.git
           cd apindex
