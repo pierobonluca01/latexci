@@ -45,7 +45,7 @@ jobs:
           git clone --depth=1 https://github.com/paperbenni/apindex.git
           cd apindex
           ls .
-          sed '7 i \t\t\tbackground-color: #0d1117;\n' share/apindex/index.template.html
+          sed '7 i             background-color: #0d1117;\n' share/apindex/index.template.html
           cat share/apindex/index.template.html
           cmake . -DCMAKE_INSTALL_PREFIX=/usr
           sudo make install
