@@ -42,9 +42,14 @@ jobs:
 
       - name: Install apindex
         run: |
-          curl https://raw.githubusercontent.com/paperbenni/apindex/master/install.sh
-          ls .
-          sed '7 i background-color: #0d1117\n' /usr/share/apindex/index.template.html
+          cd .cache
+          git clone --depth=1 https://github.com/paperbenni/apindex.git
+          cd apindex
+          sed '7 i background-color: #0d1117\n' index.template.html
+          cmake . -DCMAKE_INSTALL_PREFIX=/usr
+          sudo make install
+          cd ..
+          rm -rf apindex
         
       - name: Generate static page
         run: apindex ./artifact
