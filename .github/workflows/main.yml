@@ -5,10 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Documents
     steps:
-      - name: Set up Git repository
+      - name: 🚧 Set up Git repository
         uses: actions/checkout@v3
       
-      - name: Build LaTeX files
+      - name: ⚙ Build LaTeX files
         run: |
           docker run -i --rm -v "$(pwd)/:/work" -w /work ghcr.io/xu-cheng/texlive-full bash -c '
             shopt -s globstar
@@ -18,7 +18,7 @@ jobs:
               latexmk -lualatex $(basename $d_path)
             ) done'
             
-      - name: Generate artifact containing PDF files
+      - name: 🧬 Generate artifact containing PDF files
         uses: actions/upload-artifact@v3
         with:
           name: documentazione
@@ -29,18 +29,18 @@ jobs:
     name: Build GitHub Pages
     needs: build_docs
     steps:
-      - name: Set up Git repository
+      - name: 🚧 Set up Git repository
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Download artifact
+      - name: ⬇ Download artifact documentazione
         uses: actions/download-artifact@v3.0.1
         with:
           name: documentazione
           path: ./artifact
 
-      - name: Install apindex
+      - name: ⚒ Install apindex and update HTML template
         run: |
           git clone --depth=1 https://github.com/paperbenni/apindex.git
           cd apindex
@@ -51,10 +51,10 @@ jobs:
           cd ..
           rm -rf apindex
         
-      - name: Generate static page
+      - name: ⚙ Build static page
         run: apindex ./artifact
         
-      - name: Generate artifact containing Directory Listings Page
+      - name: 🧬 Generate artifact containing Directory Listings Page
         uses: actions/upload-artifact@v3
         with:
           name: documentazione_page
@@ -71,19 +71,19 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - name: Download artifact
+      - name: ⬇ Download artifact documentazione_page
         uses: actions/download-artifact@v3
         with:
           name: documentazione_page
           path: ./page
       
-      - name: Setup Pages
+      - name: 🚧 Setup Github Pages
         uses: actions/configure-pages@v2
       
-      - name: Upload artifact
+      - name: 🧬 Generate github-pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
           path: ./page
       
-      - name: Deploy to GitHub Pages
+      - name: ⬆ Deploy artifact to GitHub Pages
         uses: actions/deploy-pages@v1
