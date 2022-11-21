@@ -38,7 +38,7 @@ jobs:
         uses: actions/download-artifact@v3.0.1
         with:
           name: documentazione
-          path: ./artifact
+          path: ./documentazione
 
       - name: ⚒ Install apindex and update HTML template
         run: |
@@ -52,13 +52,13 @@ jobs:
           rm -rf apindex
         
       - name: ⚙ Build static page
-        run: apindex ./artifact
+        run: apindex ./documentazione
         
       - name: 🧬 Generate artifact containing Directory Listings Page
         uses: actions/upload-artifact@v3
         with:
           name: documentazione_page
-          path: ./artifact
+          path: ./documentazione
   
   deploy_ghpages:
     runs-on: ubuntu-latest
