@@ -45,7 +45,7 @@ jobs:
           git clone --depth=1 https://github.com/paperbenni/apindex.git
           cd apindex
           rm share/apindex/index.template.html
-          curl -o share/apindex/index.template.html https://github.com/$GITHUB_REPOSITORY/blob/master/.github/workflows
+          curl -o share/apindex/index.template.html https://github.com/${{ github.GITHUB_REPOSITORY }}/blob/master/.github/workflows
           cat share/apindex/index.template.html
           cmake . -DCMAKE_INSTALL_PREFIX=/usr
           sudo make install
