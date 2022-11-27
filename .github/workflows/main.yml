@@ -39,6 +39,16 @@ jobs:
         with:
           name: documentazione
           path: ./documentazione
+      
+      - name: TEST Remove d_ in pdf files
+        run: |
+          shopt -s globstar
+          set -e
+          for i in ./**/d_*.pdf; do
+            cd "$(dirname $i)"
+            base=$(basename $i)
+            mv "$base" "${base/#d_/}"
+          done
 
       - name: ⚒ Install apindex and update HTML template
         run: |
