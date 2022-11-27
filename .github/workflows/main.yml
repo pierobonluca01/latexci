@@ -42,6 +42,7 @@ jobs:
       
       - name: TEST Remove d_ in pdf files
         run: |
+          cd ./documentazione
           shopt -s globstar
           set -e
           for i in ./**/d_*.pdf; do
