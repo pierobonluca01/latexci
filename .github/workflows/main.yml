@@ -41,7 +41,7 @@ jobs:
           path: ./documentazione
       
       - name: TEST Remove d_ in pdf files
-        run: find . -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/d_/}"; done
+        run: find . -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/"/d_"/"/"}"; done
 
       - name: ⚒ Install apindex and update HTML template
         run: |
