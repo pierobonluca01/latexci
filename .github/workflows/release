@@ -1,0 +1,26 @@
+on:
+  push:
+    tags:
+      - "v*"  
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    needs: build_docs
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: ⬇ Download artifact documentazione
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name: documentazione
+          path: ./documentazione
+      
+      - name: TEST Remove d_ in pdf files
+        run: find ./documentazione -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/"/d_"/"/"}"; done
+        
+      - name: zip
+        run: zip -r documentazione.zip documentazione
+     
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: documentazione.zip
