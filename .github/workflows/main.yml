@@ -41,7 +41,7 @@ jobs:
           path: ./documentazione
       
       - name: TEST Remove d_ in pdf files
-        run: find . -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/"/d_"/"/"}"; done
+        run: find ./documentazione -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/"/d_"/"/"}"; done
 
       - name: ⚒ Install apindex and update HTML template
         run: |
@@ -65,7 +65,7 @@ jobs:
   
   deploy_ghpages:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
+    if: github.ref == 'refs/heads/master'
     name: Deploy GitHub Pages
     needs: [build_docs, build_ghpages]
     environment:
@@ -95,7 +95,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: build_docs
-    if: startsWith(github.ref, 'refs/tags/')
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: ⬇ Download artifact documentazione
         uses: actions/download-artifact@v3.0.1
@@ -104,7 +104,10 @@ jobs:
           path: ./documentazione
       
       - name: TEST Remove d_ in pdf files
-        run: find . -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/"/d_"/"/"}"; done
+        run: find ./documentazione -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/"/d_"/"/"}"; done
+        
+      - name: zip
+        run: zip -r documentazione.zip documentazione
      
       - name: "Build & test"
         uses: "marvinpinto/action-automatic-releases@latest"
@@ -112,4 +115,4 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: false
-          files: .
+          files: documentazione.zip
