@@ -91,3 +91,14 @@ jobs:
       
       - name: ⬆ Deploy artifact to GitHub Pages
         uses: actions/deploy-pages@v1
+
+  release:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "documentazione"
