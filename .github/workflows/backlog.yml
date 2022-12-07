@@ -4,13 +4,16 @@ on:
   issues:
     types:
       - opened
+  pull_request:
+    types:
+      - opened
       
 jobs:
   add-to-project:
     name: Add issue/PR to project
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/add-to-project@RELEASE_VERSION
+      - uses: actions/add-to-project@latest
         with:
           project-url: https://github.com/users/pierobonluca01/projects/1/
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
