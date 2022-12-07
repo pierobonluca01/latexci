@@ -15,5 +15,5 @@ jobs:
     steps:
       - uses: actions/add-to-project@RELEASE_VERSION
         with:
-          project-url: https://github.com/orgs/SWEasabi/projects/3/
+          project-url: https://github.com/users/pierobonluca01/projects/1/
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
