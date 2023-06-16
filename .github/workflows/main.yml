@@ -1,5 +1,9 @@
 on: [push, pull_request]
 
+env:
+  REPO_NAME: latexci
+  DISPLAY_NAME: Latex Continuous Integration
+
 jobs:
   build_docs:
     runs-on: ubuntu-latest
@@ -7,6 +11,8 @@ jobs:
     steps:
       - name: 🚧 Set up Git repository
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
       
       - name: ⚙ Build LaTeX files
         run: |
@@ -21,9 +27,9 @@ jobs:
       - name: 🧬 Generate artifact containing PDF files
         uses: actions/upload-artifact@v3
         with:
-          name: documentazione
+          name: ${{ env.REPO_NAME }}
           path: "**/d_*.pdf"
-  
+
   build_ghpages:
     runs-on: ubuntu-latest
     name: Build GitHub Pages
@@ -33,39 +39,41 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: recursive
       
-      - name: ⬇ Download artifact documentazione
+      - name: ⬇ Download artifact ${{ env.REPO_NAME }}
         uses: actions/download-artifact@v3.0.1
         with:
-          name: documentazione
-          path: ./documentazione
+          name: ${{ env.REPO_NAME }}
+          path: ./${{ env.REPO_NAME }}
       
-      - name: TEST Remove d_ in pdf files
-        run: find ./documentazione -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/"/d_"/"/"}"; done
+      - name: ✍ Remove prefix d_ in PDF files
+        run: find ./${{ env.REPO_NAME }} -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/d_/}"; done
 
       - name: ⚒ Install apindex and update HTML template
         run: |
           git clone --depth=1 https://github.com/paperbenni/apindex.git
           cd apindex
           rm share/apindex/index.template.html
-          curl -o share/apindex/index.template.html https://raw.githubusercontent.com/$GITHUB_REPOSITORY/master/.github/workflows/template.html
+          curl -o share/apindex/index.template.html https://raw.githubusercontent.com/pierobonluca01/latexci/master/.github/workflows/ghpages_template.html
+          sed -i "34d; 35i ${{ env.DISPLAY_NAME }}" share/apindex/index.template.html
           cmake . -DCMAKE_INSTALL_PREFIX=/usr
           sudo make install
           cd ..
           rm -rf apindex
         
       - name: ⚙ Build static page
-        run: apindex ./documentazione
+        run: apindex ./${{ env.REPO_NAME }}
         
       - name: 🧬 Generate artifact containing Directory Listings Page
         uses: actions/upload-artifact@v3
         with:
-          name: documentazione_page
-          path: ./documentazione
-  
+          name: ${{ env.REPO_NAME }}_html
+          path: ./${{ env.REPO_NAME }}
+
   deploy_ghpages:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     name: Deploy GitHub Pages
     needs: [build_docs, build_ghpages]
     environment:
@@ -75,11 +83,11 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - name: ⬇ Download artifact documentazione_page
+      - name: ⬇ Download artifact ${{ env.REPO_NAME }}_html
         uses: actions/download-artifact@v3
         with:
-          name: documentazione_page
-          path: ./page
+          name: ${{ env.REPO_NAME }}_html
+          path: ./html
       
       - name: 🚧 Setup Github Pages
         uses: actions/configure-pages@v2
@@ -87,30 +95,30 @@ jobs:
       - name: 🧬 Generate github-pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./page
+          path: ./html
       
       - name: ⬆ Deploy artifact to GitHub Pages
         uses: actions/deploy-pages@v1
-    
+
   release:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     name: Release
     needs: build_docs
     steps:
-      - name: ⬇ Download artifact documentazione
+      - name: ⬇ Download artifact ${{ env.REPO_NAME }}
         uses: actions/download-artifact@v3.0.1
         with:
-          name: documentazione
-          path: ./documentazione
+          name: ${{ env.REPO_NAME }}
+          path: ./${{ env.REPO_NAME }}
       
       - name: ✍ Remove prefix d_ in PDF files
-        run: find ./documentazione -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/"/d_"/"/"}"; done
+        run: find ./${{ env.REPO_NAME }} -type f -name 'd_*.pdf' | while read f; do mv "$f" "${f/"/d_"/"/"}"; done
         
       - name: 🤐 Generate ZIP archive
-        run: zip -r documentazione.zip documentazione
+        run: zip -r ${{ env.REPO_NAME }}.zip ${{ env.REPO_NAME }}
      
       - name: 🎁 Release
         uses: softprops/action-gh-release@v1
         with:
-          files: documentazione.zip
+          files: ${{ env.REPO_NAME }}.zip
