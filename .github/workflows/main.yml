@@ -24,6 +24,15 @@ jobs:
               latexmk -lualatex $(basename $d_path)
             ) done'
             
+      - name: 🖋️ Append version to pdf files
+        run: |
+          shopt -s globstar
+          set -e
+          for d_path in ./**/d_*.tex; do (
+            cd "$(dirname $d_path)"
+            grep -Prioh --include="d_*.tex" 'v\d+\.\d+\.\d+'
+          ) done
+            
       - name: 🧬 Generate artifact containing PDF files
         uses: actions/upload-artifact@v3
         with:
