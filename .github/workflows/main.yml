@@ -24,7 +24,7 @@ jobs:
               latexmk -lualatex $(basename $d_path)
             ) done'
             
-      - name: 🖋️ Append version to pdf files
+      - name: 🖋️ Append version to PDF files
         run: |
           shopt -s globstar
           set -e
@@ -32,7 +32,7 @@ jobs:
             cd "$(dirname $d_path)"
             if grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+'
             then
-              version=grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+'
+              version = grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+'
             fi
           ) done
             
