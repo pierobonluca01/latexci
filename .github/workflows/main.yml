@@ -26,9 +26,11 @@ jobs:
             
       - name: 🖋️ Append version to pdf files
         run: |
+          shopt -s globstar
+          set -e
           for d_path in ./**/d_*.tex; do (
             cd "$(dirname $d_path)"
-            grep -Prioh --include="d_*.tex" 'v\d+\.\d+\.\d+'
+            grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+'
           ) done
             
       - name: 🧬 Generate artifact containing PDF files
