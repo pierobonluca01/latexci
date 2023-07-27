@@ -56,8 +56,6 @@ jobs:
           cd apindex
           rm share/apindex/index.template.html
           curl -o share/apindex/index.template.html https://raw.githubusercontent.com/pierobonluca01/latexci/master/.github/workflows/ghpages_template.html
-          rm share/apindex/file.template.html
-          curl -o share/apindex/file.template.html https://raw.githubusercontent.com/pierobonluca01/latexci/master/.github/workflows/ghpages_template_file.html
           sed -i "34d; 35i ${{ env.DISPLAY_NAME }}" share/apindex/index.template.html
           cmake . -DCMAKE_INSTALL_PREFIX=/usr
           sudo make install
