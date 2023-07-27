@@ -30,7 +30,7 @@ jobs:
           set -e
           for d_path in ./**/d_*.tex; do (
             cd "$(dirname $d_path)"
-            if [ grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+' ]
+            if grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+'
             then
               version=grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+'
             fi
