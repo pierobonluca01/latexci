@@ -24,17 +24,17 @@ jobs:
               latexmk -lualatex $(basename $d_path)
             ) done'
             
-      - name: 🖋️ Append version to PDF files
-        run: |
-          shopt -s globstar
-          set -e
-          for d_path in ./**/d_*.tex; do (
-            cd "$(dirname $d_path)"
-            if grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+'
-            then
-              version = grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+'
-            fi
-          ) done
+      # - name: 🖋️ Append version to PDF files
+      #   run: |
+      #     shopt -s globstar
+      #     set -e
+      #     for d_path in ./**/d_*.tex; do (
+      #       cd "$(dirname $d_path)"
+      #       if grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+'
+      #       then
+      #         version = grep -Prioh --include='d_*.tex' 'v\d+\.\d+\.\d+'
+      #       fi
+      #     ) done
             
       - name: 🧬 Generate artifact containing PDF files
         uses: actions/upload-artifact@v3
@@ -64,10 +64,8 @@ jobs:
 
       - name: ⚒ Install apindex and update HTML template
         run: |
-          git clone --depth=1 https://github.com/paperbenni/apindex.git
+          git clone --depth=1 https://github.com/pierobonluca01/apindex.git
           cd apindex
-          rm share/apindex/index.template.html
-          curl -o share/apindex/index.template.html https://raw.githubusercontent.com/pierobonluca01/latexci/master/.github/workflows/ghpages_template.html
           sed -i "34d; 35i ${{ env.DISPLAY_NAME }}" share/apindex/index.template.html
           cmake . -DCMAKE_INSTALL_PREFIX=/usr
           sudo make install
